@@ -20,6 +20,10 @@ if (array_key_exists("submit1",$_POST)) {
     
 }
 
+if (!$_POST['year']) {
+    $error1.="Please include the Year <br>";
+    
+}
  
 if ($error1 !="") {
     $error1 = "Incomplete Input<br>".$error1;
@@ -62,10 +66,11 @@ if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg
         $image1=basename( $_FILES["image1"]["name"]);
 
         $title1=$_POST['title1'];
+         $year=$_POST['year'];
 
 
        
-   $sql = "INSERT INTO album_table (album_name,album_img) VALUES ('$title1','$image1') ";
+   $sql = "INSERT INTO album_table (album_name,album_img,year) VALUES ('$title1','$image1','$year') ";
     
     if (mysqli_query($conn, $sql)) {
     $success1= "<p class='alert alert-success alert-dismissable'>You have successfully created Your Album</p>";
@@ -206,6 +211,11 @@ if (isset($success1)) {
                       <label>Album Picture</label><br>
                       <input type="file" name="image1"  class="file-upload-browse btn btn-primary">
                       
+                    </div>
+                    <div class="form-group">
+                    
+                      <label for="exampleInputName1">Year Preached</label>
+                      <input type="text" class="form-control" id="exampleInputName1" placeholder="Sermon Year" name="year">
                     </div>
                    <div class="form-group">
                      

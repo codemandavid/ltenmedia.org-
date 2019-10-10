@@ -87,7 +87,7 @@ include("admin/connection.php");
                                             <img src="admin/album/<?php echo $fetch['album_img'];  ?>" alt="" width="600px" height="300">
                                         </a>
                                         <h3 class="post-title"><a><?php  echo $fetch['album_name']; ?></a></h3>
-                                        <div class="meta-data">by <a ></a>Light Of Truth Equipping Network</div>
+                                        <div class="meta-data">Year Series : <a ><?php echo $fetch['year'];  ?></a></div>
                                        <!-- <p>Nulla consequat massa quis enim.Donec pede justo, fringilla vel, aliquet nec, Nulla consequat massa quis enim.Donec pede justo, fringilla vel, aliquet nec vulputate nulla consequat massa quis enim.Donec pede justo, fringilla vel, aliquet nec, Nulla consequat massa quis enim.Donec pede justo, fringilla vel, aliquet nec vulputate eget...</p>-->
                                         <p><a href="sermon-details.php?rr=<?php echo $id ?>" class="btn btn-primary">VIEW TRACKS</a></p>
                                         <?php } ?>  
@@ -116,7 +116,7 @@ include("admin/connection.php");
                                                 </div>
                                                 <div class="col-md-8">
                                                     <a ><strong class="post-title"><?php  echo $fetch['album_name']; ?></strong></a>
-                                                    <div class="meta-data">by <a ></a>Light Of Truth Equipping Network</div>
+                                                     <div class="meta-data">Year Series : <a ><?php echo $fetch['year'];  ?></a></div>
                                                     
                                                     <p><a href="sermon-details.php?rr=<?php echo $id ?>" class="btn btn-primary">VIEW TRACKS</a></p>
                                                 </div>

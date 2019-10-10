@@ -1,3 +1,7 @@
+<?php 
+include 'admin/connection.php';
+?>
+
 <footer class="site-footer">
        	<div class="container">
     		<div class="site-footer-top">
@@ -8,9 +12,39 @@
                         <p>Light of Truth Equipping Network is an Apostolic ministry with the mandate to teach a people truth by revelation, equipping them to be all God wants them to be and raising up a people who do the Father's will and demonstrate the supernatural power of God and His Kingdom.</p>
                     </div>
                 	<div class="col-md-4 widget footer_widget twitter_widget">
-                    	<h4>Facebook feeds</h4>
+                    	<h4>Sermon Archives</h4>
                         <hr class="sm">
-                      	<ul class="twitter-widget"></ul>
+                        <ul>
+                         <?php
+                         // Sets the top option to be the current year. (IE. the option that is chosen by default).
+                               $currentlySelected = date('Y'); 
+                                // Year to start available options at
+                                $earliestYear = 2017;
+                                // Set your latest year you want in the range, in this case we use PHP to just set it to the current year.
+                                $latest_year = date('Y'); 
+ 
+                          
+                        echo '<div class="widget sidebar-widget widget_categories">';
+              
+                            echo'<ul>';
+                                // Loops over each int[year] from current year, back to the $earliest_year [2017]
+                         foreach ( range( $latest_year,  $earliestYear ) as $i ) {
+                                 // Prints the option with the next year in range.
+                           echo'<a href="archives.php?rr='.$i.'" ><li  '.( $i === $currentlySelected).'>'.$i.' Year Series</li></a>';
+                                }
+                            
+                            echo'</ul>';
+                        echo '</div>';
+                        ?>
+
+                                
+                                  
+                                
+
+
+                                
+                      	<!-- <ul class="twitter-widget"></ul> -->
+                        </ul>
             		</div>
                 	<div class="col-md-4 widget footer_widget newsletter_widget">
                         <h4>News subscription</h4>
