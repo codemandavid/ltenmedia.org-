@@ -1,6 +1,7 @@
 <?php
 session_start();
-include("connection.php");
+include('connfile.php');
+
 if (isset($_SESSION['id'])) {
   # code...
 }else{
@@ -14,42 +15,50 @@ if (array_key_exists("submit",$_POST)) {
     $error.=" Event Image required<br>";
     
 }
+
     
 if (!$_POST['title']) {
-    $error.="An Event Title is required <br>";
-    
+    $error.="An Event Title is required <br>";   
 }
+if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
+    $_POST['title'])) {
+      $error = "Only Leters Please !! No Urls";
+    }
 if (!$_POST['date']) {
     $error.="Event Date is required <br>";
     
 }
+if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
+    $_POST['date'])) {
+      $error = "Only Leters Please !! No Urls";
+    }
 if (!$_POST['address']) {
-    $error.="Event Address is required <br>";
+    $error="Event Address is required <br>";
     
 }
+if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
+    $_POST['address'])) {
+      $error = "Only Leters Please !! No Urls";
+    }
 if (!$_POST['details']) {
-    $error.="Event details is required <br>";
+    $error="Event details is required <br>";
     
 }
+if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
+    $_POST['details'])) {
+      $error = "Only Leters Please !! No Urls";
+    }
 
 if ($error !="") {
     $error = "Incomplete Input<br>".$error;
 }else{
 
-  $target_dir = "events/";
+  $target_dir ="events/";
  $target_file = $target_dir . basename($_FILES["image"]["name"]); 
  $uploadOk=1;
  $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 
-    // Check if image file is a actual image or fake image
-   /* $check = getimagesize($_FILES["image"]["tmp_name"]);
-    if($check !== false) {
-        //echo "File is an image - " . $check["mime"] . ".";
-      $uploadOk = 1;   
-    } else {
-        $error= "File is not an image.";
-          $uploadOk = 0;
-    }*/
+   
     //check file size
      if ($_FILES["image"]["size"] > 5000000) {
     $error="Sorry, your file is too large.File should not be more than 5mb.";
@@ -71,18 +80,17 @@ if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg
     if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
         $image=basename( $_FILES["image"]["name"]);
 
-        $title=$_POST['title'];
-        $date=$_POST['date'];
-        $address=$_POST['address'];
-         $details=$_POST['details'];
-
-   $sql = "INSERT INTO event_table (event_title,address,event_date,details,event_img)
+        $title=htmlspecialchars($_POST['title']);
+        $date= htmlspecialchars($_POST['date']);
+        $address=htmlspecialchars($_POST['address']);
+        $details=  htmlspecialchars(stripslashes(trim($_POST['details'])));
+   $sql ="INSERT INTO event_table (event_title,address,event_date,details,event_img)
 VALUES ('$title','$address','$date','$details','$image')";
     
-    if (mysqli_query($conn, $sql)) {
+    if (mysqli_query($conn,$sql)) {
     $success= "You have successfully created Your Event ";
 } else {
-    $error="There was a Problem uploading Your FIle<br>";
+    $error="There was a Problem uploading Your FIle<br>". mysqli_error($conn);
 } 
  }
  }
@@ -106,9 +114,9 @@ VALUES ('$title','$address','$date','$details','$image')";
 
 
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <!-- Required meta tags -->
-  <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>LTEN Admin</title>
   <!--form links -->
@@ -120,7 +128,7 @@ VALUES ('$title','$address','$date','$details','$image')";
   <!-- inject:css -->
   <link rel="stylesheet" href="css/vertical-layout-dark/style.css">
   <!-- endinject -->
-  <link rel="shortcut icon" href="images/favicon.png" />
+  
   <!-- plugins:css -->
    <link rel="stylesheet" href="vendors/iconfonts/ti-icons/css/themify-icons.css">
    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
@@ -133,15 +141,14 @@ VALUES ('$title','$address','$date','$details','$image')";
    <link rel="stylesheet" href="css/vertical-layout-dark/style.css">
    <!-- endinject -->
    <link rel="shortcut icon" href="images/ltenlogo.png" />
-   <!--lastly added-->
+
+
+  <!--lastly added-->
 
  <link rel="stylesheet" href="csss/bootstrap-responsive.min.css" />
 <link rel="stylesheet" href="csss/bootstrap-wysihtml5.css" />
-<!--  <link href="font-awesome/csss/font-awesome.css" rel="stylesheet" /> -->
+
 <!--lastly added-->
-
-
-
 </head>
 
 <body>
@@ -213,7 +220,8 @@ if (isset($success)) {
                   <h4 class="card-title">Upload Events</h4>
                   <p class="card-description">
                   </p>
-                  <form class="forms-sample"  method="post" enctype="multipart/form-data"  action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                  <form class="forms-sample"  method="post" enctype="multipart/form-data" 
+                      action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" >
                     <div class="form-group">
                       <label for="exampleInputName1">Event Title</label>
                       <input type="text" class="form-control" id="exampleInputName1" placeholder="Event Title" name="title">
@@ -222,27 +230,21 @@ if (isset($success)) {
                       <label for="exampleInputEmail3">Event Date</label>
                       <input type="text" class="form-control" id="exampleInputEmail3"  placeholder="Event Date (e.g 20-23,January, 2019)" name="date" >
                     </div>
-
-
-
                     <div class="form-group">
                       <label for="exampleInputPassword4">Event Address</label>
                       <input type="text" class="form-control" id="exampleInputPassword4"placeholder="Event Address(e.g PO Box 16 Collins Street Benin City)" name="address" >
                     </div>
                     
-                <div class=" file-upload-browse btn btn-primary">
+                  <div class="form-group file-upload-browse btn btn-primary">
                       <label>File upload</label>
                       <input type="file"  name="image">
-              </div> 
+              </div>
                      
-                    
                     </div>
                     <div class="form-group">
-                     <div class="controls">
-              <label class="control-label">Blog Details</label>
-              <textarea class="textarea_editor span10" rows="6" placeholder=" Event Details ..." name="details"></textarea>
+              <label class="control-label">Event Details</label>
+              <textarea class="textarea_editor span12" rows="6" placeholder=" Blog Details ..." name="details"></textarea>
             </div>
-</div>
           </div>
               
             </div>
@@ -288,14 +290,13 @@ if (isset($success)) {
   <!-- endinject -->
   <!-- Custom js for this page-->
   <script src="js/editorDemo.js"></script>
-  <!-- End custom js for this page-->
-  <!--lastly  added -->
- <!--  <script src="jss/jquery.min.js"></script> 
-<script src="jss/jquery.ui.custom.js"></script> 
-<script src="jss/bootstrap.min.js"></script> 
-<script src="jss/bootstrap-colorpicker.js"></script> 
-<script src="jss/bootstrap-datepicker.js"></script>  -->
-<!-- <script src="jss/jquery.toggle.buttons.js"></script>  -->
+   <!--lastly  added -->
+<!--  <script src="jss/jquery.min.js"></script> -->
+<!--<script src="jss/jquery.ui.custom.js"></script> -->
+<!--<script src="jss/bootstrap.min.js"></script> -->
+<!--<script src="jss/bootstrap-colorpicker.js"></script> -->
+<!--<script src="jss/bootstrap-datepicker.js"></script> -->
+<!--<script src="jss/jquery.toggle.buttons.js"></script> -->
 <script src="jss/masked.js"></script> 
 <script src="jss/jquery.uniform.js"></script> 
 <script src="jss/select2.min.js"></script> 
@@ -307,6 +308,7 @@ if (isset($success)) {
 <script>
   $('.textarea_editor').wysihtml5();
 </script>
+  <!-- End custom js for this page-->
 </body>
 
 

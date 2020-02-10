@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connection.php");
+include('connfile.php');
 if (isset($_SESSION['id'])) {
   # code...
 }else{
@@ -14,6 +14,10 @@ if (array_key_exists("submit1",$_POST)) {
     $error1.="A Book Title is required <br>";
     
 }
+  if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
+    $_POST['title1'])) {
+      $error1 = "Only Leters Please !! No Urls";
+    }
 
     if (!$_FILES['image1']['name']) {
     $error1.=" Book Cover required<br>";
@@ -29,24 +33,18 @@ if ($error1 !="") {
     $error1 = "Incomplete Input<br>".$error1;
 }else{
 
+// to move the book
 $target_dir = "books/";
  $target_file = $target_dir . basename($_FILES["image1"]["name"]); 
  $uploadOk=1;
  $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 
+// to move the image
  $target_dir1 = "books/";
  $target_file1 = $target_dir1 . basename($_FILES["book"]["name"]); 
  $uploadOk=1;
  $bookFileType = pathinfo($target_file1,PATHINFO_EXTENSION);
-    // Check if image file is a actual image or fake image
-   /* $check = getimagesize($_FILES["image"]["tmp_name"]);
-    if($check !== false) {
-        //echo "File is an image - " . $check["mime"] . ".";
-      $uploadOk = 1;   
-    } else {
-        $error= "File is not an image.";
-          $uploadOk = 0;
-    }*/
+    
     //check file size
      if ($_FILES["image1"]["size"] > 3000000) {
     $error1="Sorry, your cover is too large.File should not be more than 3mb.";
@@ -87,7 +85,7 @@ if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg
              $image1=basename( $_FILES["image1"]["name"]);
             $book=basename($_FILES["book"]["name"]);
 
-        $title1=$_POST['title1'];
+        $title1=htmlspecialchars($_POST['title1']);
 
 
        
@@ -120,9 +118,9 @@ if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg
 <html lang="zxx">
 
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <!-- Required meta tags -->
-  <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>LTEN Admin</title>
   <!--form links -->
@@ -224,7 +222,7 @@ if (isset($success1)) {
                   <h4 class="card-title">Upload E-Books</h4>
                   <p class="card-description">
                   </p>
-                  <form class="forms-sample" method="post" enctype="multipart/form-data"  action="">
+                  <form class="forms-sample" method="post" enctype="multipart/form-data"  action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                     <div class="form-group">
                       <!-- <b>PLEASE NOTE THAT ALL IMAGES MUST BE LANDSCAPE AND MUST NOT EXCEED 600*300</b><br><br> -->
                       <label for="exampleInputName1">Book Name</label>

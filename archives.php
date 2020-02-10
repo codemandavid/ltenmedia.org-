@@ -1,6 +1,6 @@
 <?php 
 include("admin/connection.php");
-
+include ("archivespagination.php");
  ?>
  <!DOCTYPE HTML>
 <html class="no-js">
@@ -63,12 +63,14 @@ if (isset($_GET['rr'])) {
   $year= $_GET['rr'];
 }
 
- $query= "SELECT *  FROM album_table WHERE Year ='".$year."'  ";
+ $query= "SELECT *  FROM album_table WHERE Year ='".$year."' $limit ";
                 $run=mysqli_query($conn,$query);
-                // $fetcharray= mysqli_fetch_array($run);
 
                 
   while($fetch = mysqli_fetch_array($run)){
+    // $fetch = mysqli_fetch_array($run);
+                 $id=$fetch['id'];
+
             ?>
                 <li class="col-md-4 col-sm-6 sermon-item grid-item format-standard">
                             <div class="grid-item-inner">
@@ -77,9 +79,9 @@ if (isset($_GET['rr'])) {
                                 </a>
                                 <div class="grid-content">
                                   <div class="meta-data">Year Series : <a ><?php echo $fetch['year'];  ?></a></div>
-                                  <h3><a href="sermon-details.php?rr=<?php echo $fetch['rr'] ?>"><?php echo $fetch['album_name']; ?></a></h3>
+                                  <h3><a href="sermon-details.php?rr=<?php echo $fetch['year'] ?>"><?php echo $fetch['album_name']; ?></a></h3>
                                    
-                                    <a href="sermon-details.php?rr=<?php echo $fetch['rr'] ?>" class="btn btn-primary">View Tracks<i class="fa fa-chevron-right"></i></a>
+                                    <a href="sermon-details.php?rr=<?php echo $fetch['id'] ?>" class="btn btn-primary">View Tracks<i class="fa fa-chevron-right"></i></a>
                                 </div>
                             </div>
                         </li>
@@ -99,6 +101,10 @@ if (isset($_GET['rr'])) {
           </div>
         </div>
     </div>
-
+<nav aria-label="Page navigation example" style="margin-left:40%;  ">
+  <ul class="pagination">
+      <?php echo  $paginationCtrls ; ?>
+  </ul>
+    </nav>
     </body>
     </html>

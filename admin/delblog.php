@@ -1,7 +1,6 @@
 <?php 
 session_start();
-include("connection.php");
-
+include('connfile.php');
 
 // note that this delete function does not include images. just text .
 

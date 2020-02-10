@@ -1,5 +1,5 @@
 <?php 
-include('connection.php');
+include('connfile.php');
 
 $id=1;
 $password="ltenmedia";

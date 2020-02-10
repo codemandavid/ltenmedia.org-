@@ -1,7 +1,7 @@
 <?php 
 session_start();
 include("eventspage.php");
-include("connection.php");
+include('connfile.php');
 
 if (isset($_SESSION['id'])) {
   # code...

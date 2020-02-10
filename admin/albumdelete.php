@@ -1,6 +1,6 @@
 <?php 
 session_start();
-include("connection.php");
+include('connfile.php');
 
 if  (htmlspecialchars(isset($_GET['rn']))){
   $id = $_GET['rn'];
@@ -11,8 +11,9 @@ if  (htmlspecialchars(isset($_GET['rn']))){
   $target_dir ="album/";
   $target_file =$target_dir.$image;
   $remove= unlink($target_file);
-  if ($remove) {
-   $deletearticle = mysqli_query($conn, "DELETE album_table, sermon_table FROM album_table, sermon_table WHERE album_table.id = '$id' AND sermon_table.album_id = album_table.id" );
+  if ( $remove) {
+   $deletearticle = mysqli_query($conn, "DELETE  FROM  album_table WHERE id = '".$id."' " );  
+   
   
 if ($deletearticle) {
   $_SESSION['update'] = "<p class='alert alert-success'> Album was successfully deleted</p>";
@@ -36,7 +37,7 @@ exit();
   }
   
   }
-  //DELETE FROM  album_table WHERE id = '".$id."' "
+
   ?>
 
 

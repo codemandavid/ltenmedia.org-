@@ -1,6 +1,5 @@
 <?php
-
-	include("connection.php");
+include('connfile.php');
 	
 	$query=mysqli_query($conn,"SELECT count(id) FROM `album_table`");
 	$row = mysqli_fetch_row($query);

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connection.php");
+include ('connfile.php');
 if (isset($_SESSION['id'])) {
   # code...
 }else{
@@ -15,58 +15,30 @@ if (!$_POST['title']) {
     $error.="An Blog Title is required <br>";
     
 }
+if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
+    $_POST['title'])) {
+      $error.= "Only Leters Please !! No Urls";
+    }
 
 
 if (!$_POST['details']) {
     $error.="Blog details is required <br>";
     
 }
-
+if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
+    $_POST['details'])) {
+      $error.= "Only Leters Please !! No Urls";
+    }
 if ($error !="") {
-    $error = "Incomplete Input<br>".$error;
+    $error= "Incomplete Input<br>".$error;
 }else{
 
-//   $target_dir = "blog/";
-//  $target_file = $target_dir . basename($_FILES["image"]["name"]); 
-//  $uploadOk=1;
-//  $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
-
-//     // Check if image file is a actual image or fake image
-//     $check = getimagesize($_FILES["image"]["tmp_name"]);
-//     if($check !== false) {
-//         //echo "File is an image - " . $check["mime"] . ".";
-//       $uploadOk = 1;   
-//     } else {
-//         $error= "File is not an image.";
-//           $uploadOk = 0;
-//     }
-//     //check file size
-//      if ($_FILES["image"]["size"] > 5000000) {
-//     $error="Sorry, your file is too large.File should not be more than 5mb.";
-//       $uploadOk = 0;
-  
-//  }
-//  // Allow certain file formats
-// if($imageFileType == "jpg" && $imageFileType == "png" && $imageFileType == "jpeg"
-//  && $imageFileType == "gif" && $imageFileType == "JPG" &&  $imageFileType == "JPEG" &&  $imageFileType == "PNG") {
-    
-
-  
-//   }
-
- //  if ($uploadOk == 0) {
- //    $error="Sorry, your file was not uploaded.".$error;
- // // if everything is ok, try to upload file
- // }  else {
- //    if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-
- //        $image=basename( $_FILES["image"]["name"]);
 
 
-        $title=$_POST['title'];
+        $title=htmlspecialchars($_POST['title']   );
         $date=date("d-m-Y");
-        $details=  mysqli_real_escape_string($conn, stripslashes(trim($_POST['details'])));
-
+        // $details=  mysqli_real_escape_string($conn, stripslashes(trim($_POST['details'])));
+        $details= htmlspecialchars($_POST['details'],ENT_QUOTES); 
    $sql = "INSERT INTO blog (blog_title,blog_details,blog_date)
 VALUES ('$title','$details','$date')";
     
@@ -85,9 +57,9 @@ VALUES ('$title','$details','$date')";
 <!DOCTYPE html>
 <html lang="zxx">
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <!-- Required meta tags -->
-  <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>LTEN Admin</title>
   <!--form links -->
@@ -99,42 +71,26 @@ VALUES ('$title','$details','$date')";
   <!-- inject:css -->
   <link rel="stylesheet" href="css/vertical-layout-dark/style.css">
   <!-- endinject -->
-  <link rel="shortcut icon" href="images/favicon.png" />
+
   <!-- plugins:css -->
    <link rel="stylesheet" href="vendors/iconfonts/ti-icons/css/themify-icons.css">
    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
    <link rel="stylesheet" href="vendors/css/vendor.bundle.addons.css">
    <!-- endinject -->
-<!--lastly added-->
-
- <link rel="stylesheet" href="csss/bootstrap-responsive.min.css" />
-<link rel="stylesheet" href="csss/bootstrap-wysihtml5.css" />
-<!--  <link href="font-awesome/csss/font-awesome.css" rel="stylesheet" /> -->
-<!--lastly added-->
-
    <!-- plugin css for this page -->
    <link rel="stylesheet" href="vendors/summernote/dist/summernote-bs4.css">
    <!-- End plugin css for this page -->
    <!-- inject:css -->
-   <!-- <link rel="stylesheet" href="css/vertical-layout-dark/style.css"> -->
+   <link rel="stylesheet" href="css/vertical-layout-dark/style.css">
    <!-- endinject -->
    <link rel="shortcut icon" href="images/ltenlogo.png" />
-<style type="text/css">
-  .active-pink-textarea.md-form label.active {
-  color: #f48fb1;
-}
-.pink-textarea textarea.md-textarea:focus:not([readonly]) {
-  border-bottom: 1px solid #f48fb1;
-  box-shadow: 0 1px 0 0 #f48fb1;
-}
-.pink-textarea.md-form .prefix.active {
-  color: #f48fb1;
-}
-.active-pink-textarea.md-form textarea.md-textarea:focus:not([readonly])+label {
-  color: #f48fb1;
-}
+   <!--lastly added-->
 
-</style>
+ <link rel="stylesheet" href="csss/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="csss/bootstrap-wysihtml5.css" />
+
+<!--lastly added-->
+
 
 
 </head>
@@ -214,10 +170,9 @@ if (isset($success)) {
                       <input type="text" class="form-control" id="exampleInputName1" placeholder="Blog Title" name="title">
                     </div>
                  </div>
-                  
-<div class="controls">
+                    <div class="controls">
               <label class="control-label">Blog Details</label>
-              <textarea class="textarea_editor span12" rows="6" placeholder=" Event Details ..." name="details"></textarea>
+              <textarea class="textarea_editor span12" rows="6" placeholder=" Blog Details ..." name="details"></textarea>
             </div>
           </div>
               
@@ -253,19 +208,19 @@ if (isset($success)) {
   <!-- plugin js for this page -->
   <script src="vendors/tinymce/tinymce.min.js"></script>
   <script src="vendors/tinymce/themes/modern/theme.js"></script>
- <!--  <script src="vendors/summernote/dist/summernote-bs4.min.js"></script> -->
+  <script src="vendors/summernote/dist/summernote-bs4.min.js"></script>
   <!-- plugin js for this page -->
   <!-- inject:js -->
-  <script src="js/off-canvas.js"></script>
-  <script src="js/hoverable-collapse.html"></script>
-  <script src="js/template.js"></script>
-  <script src="js/settings.js"></script>
-  <script src="js/todolist.js"></script>
+  <!--<script src="js/off-canvas.js"></script>-->
+  <!--<script src="js/hoverable-collapse.html"></script>-->
+  <!--<script src="js/template.js"></script>-->
+  <!--<script src="js/settings.js"></script>-->
+  <!--<script src="js/todolist.js"></script>-->
   <!-- endinject -->
   <!-- Custom js for this page-->
-  <script src="js/editorDemo.js"></script>
-
-  <!--lastly  added -->
+  <!--<script src="js/editorDemo.js"></script>-->
+  
+   <!--lastly  added -->
   <script src="jss/jquery.min.js"></script> 
 <script src="jss/jquery.ui.custom.js"></script> 
 <script src="jss/bootstrap.min.js"></script> 
@@ -283,8 +238,6 @@ if (isset($success)) {
 <script>
   $('.textarea_editor').wysihtml5();
 </script>
-  <!--end-Footer-part--> 
-
   <!-- End custom js for this page-->
 </body>
 

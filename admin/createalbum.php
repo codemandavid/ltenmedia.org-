@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connection.php");
+include('connfile.php');
 if (isset($_SESSION['id'])) {
   # code...
 }else{
@@ -14,16 +14,22 @@ if (array_key_exists("submit1",$_POST)) {
     $error1.="An Album Title is required <br>";
     
 }
-
+if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$_POST['title1'])) {
+      $error1 = "Only Leters Please !! No Urls";
+    }
+   
+if (!$_POST['year']) {
+    $error1.="Please include the Year <br>";
+    
+}
+if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$_POST['year'])) {
+      $error1 = "Only the Year Alone !! No Urls";
+    }
     if (!$_FILES['image1']['name']) {
     $error1.=" Album Image required<br>";
     
 }
 
-if (!$_POST['year']) {
-    $error1.="Please include the Year <br>";
-    
-}
  
 if ($error1 !="") {
     $error1 = "Incomplete Input<br>".$error1;
@@ -65,12 +71,14 @@ if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg
     if (move_uploaded_file($_FILES["image1"]["tmp_name"], $target_file)) {
         $image1=basename( $_FILES["image1"]["name"]);
 
-        $title1=$_POST['title1'];
-         $year=$_POST['year'];
+
+        $title1= mysqli_real_escape_string($conn,$_POST['title1']);
+   
+        $year=mysqli_real_escape_string($conn, $_POST['year']);
 
 
        
-   $sql = "INSERT INTO album_table (album_name,album_img,year) VALUES ('$title1','$image1','$year') ";
+  $sql = "INSERT INTO album_table (album_name,album_img,year) VALUES ('$title1','$image1','$year') ";
     
     if (mysqli_query($conn, $sql)) {
     $success1= "<p class='alert alert-success alert-dismissable'>You have successfully created Your Album</p>";
@@ -95,9 +103,9 @@ if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg
 <html lang="zxx">
 
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <!-- Required meta tags -->
-  <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>LTEN Admin</title>
   <!--form links -->
@@ -212,7 +220,7 @@ if (isset($success1)) {
                       <input type="file" name="image1"  class="file-upload-browse btn btn-primary">
                       
                     </div>
-                    <div class="form-group">
+                      <div class="form-group">
                     
                       <label for="exampleInputName1">Year Preached</label>
                       <input type="text" class="form-control" id="exampleInputName1" placeholder="Sermon Year" name="year">

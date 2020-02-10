@@ -1,13 +1,8 @@
-
 <?php
 session_start();
 
-include("connection.php");
-/*if (isset($_SESSION['id'])) {
-  # code...
-}else{
-  header('Location:login.php');
-}*/
+include('connfile.php');
+
 
 $error="";
 if (array_key_exists("submit",$_POST)) {
@@ -32,6 +27,7 @@ if ($error !="") {
                         $result= mysqli_query($conn, $query);
 
                         if (mysqli_num_rows($result) > 0) {
+                           
          
                         $row = mysqli_fetch_array($result);       
                         $hashedpassword = md5(md5($row['id']).$_POST['password']);
@@ -39,10 +35,17 @@ if ($error !="") {
                         $run=mysqli_query($conn, $query);
 
                         if (mysqli_num_rows($run) > 0) {
+                           
+                           
                             $_SESSION['id']= $row['id'];
                              $_SESSION['username']=$_POST['username'];
-                            header("Location:index.php");
-
+                        ?>
+                        <script>
+                        window.location="index.php";    
+                            
+                        </script>
+                            //header("Location:index.php");
+<?php
                         } else{
 
                             $error="User not found";
@@ -67,9 +70,9 @@ if ($error !="") {
 
 
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <!-- Required meta tags -->
-  <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>LTEN Admin</title>
   <!-- plugins:css -->
@@ -103,7 +106,7 @@ if ($error !="") {
     }
 
     ?>
-              <form class="pt-3" method="post">
+              <form class="pt-3" method="post"  action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                 <div class="form-group">
                   <label>Username</label>
                   <div class="input-group">
@@ -139,9 +142,7 @@ if ($error !="") {
                    <input type="submit"  class="btn btn-block btn-primary btn-lg href="" name="submit" value="Login">
                 </div>
                 
-               <!--  <div class="text-center mt-4 font-weight-light">
-                  Already have a <a href=""  name="submit" class="text-primary">Login</a>
-                </div> --> 
+               
               </form>
             </div>
           </div>
